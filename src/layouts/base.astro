@@ -1,0 +1,33 @@
+---
+import { Button } from '@/components/ui/button'
+
+const {title} = Astro.props
+---
+
+<html lang="ja">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+	<body>
+		<header class="flex py-1">
+			<!-- ロゴ -->
+			<Button variant="outline" className="m-5 text-black">
+				Disco-Chan!
+			</Button>
+			<div class="flex-grow"/>
+			<!-- ログインボタン -->
+			<div class="flex items-end justify-end">
+				<Button className="m-5 text-white">
+					Login with Discord
+				</Button>
+			</div>
+		</header>
+
+		<!-- メインコンテンツ -->
+		<slot />
+	</body>
+</html>
