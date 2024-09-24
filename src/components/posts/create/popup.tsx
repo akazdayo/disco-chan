@@ -22,7 +22,9 @@ export function PopUp() {
 				<DialogHeader>
 					<DialogTitle>募集を作成</DialogTitle>
 					<DialogDescription>
-						新しく募集を作成します。必要事項を入力し、投稿ボタンを押してください。
+						新しく募集を作成します。
+						<br />
+						必要事項を入力し、投稿ボタンを押してください。
 					</DialogDescription>
 				</DialogHeader>
 				<div className="grid gap-4 py-4">

@@ -1,14 +1,15 @@
 ---
-import "@/styles/global.css";
 import BaseLayout from "@/layouts/base.astro"
 import Post from "@/components/posts/post.astro";
 import {PopUp} from "@/components/posts/create/popup";
 ---
 
 <BaseLayout title="Home">
-	<div class="flex flex-col">
+	<div class="flex flex-col w-1/5 m-auto justify-center">
 		<PopUp client:load />
-		<Post user="Hiroyuki Nishimura" message="軽くLeague of Legendsしたいです！" time={2} tags={["LoL", "雑談"]}></Post>
+	</div>
+	<div class="flex flex-col">
+		<Post user="Hiroyuki Nishimura" message="軽くLeague of Legendsしたいです！" time={2} tags={["LoL", "雑談", "二時間くらい"]}></Post>
 		<Post user="Hiroyuki Nishimura" message="それってあなたの感想ですよね！！！2" time={2} tags={["LoL", "hello"]}></Post>
 		<Post user="Hiroyuki Nishimura" message="それってあなたの感想ですよね！！！3" time={2} tags={["LoL", "hello"]}></Post>
 	</div>
