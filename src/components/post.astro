@@ -1,0 +1,40 @@
+---
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Reaction } from "@/components/reaction";
+
+const { message, user, time, tags} = Astro.props;
+---
+
+<div class="flex items-center justify-center m-2 bg-background">
+	<div class="bg-card rounded-lg shadow-lg w-full max-w-md p-6">
+		<div class="flex items-start gap-4">
+			<!--
+			<Avatar className="w-10 h-10 border">
+				<AvatarImage src="@public/placeholder-user.jpg" alt="User Avatar" />
+				<AvatarFallback>TEST</AvatarFallback>
+			</Avatar>
+			 -->
+			<div class="grid gap-1 flex-1">
+				<div class="flex items-center gap-2">
+					<div class="font-medium">{user}</div>
+					<div class="text-xs text-muted-foreground">
+						{time} hours ago
+					</div>
+				</div>
+				<div class="text-sm prose">
+					<p>{message}</p>
+				</div>
+				<div class="flex gap-2">
+					{
+						tags.map((tag:string) => (
+							<div class="bg-muted rounded-full px-3 py-1 text-xs text-muted-foreground">
+								{tag}
+							</div>
+						))
+					}
+				</div>
+				<Reaction client:load />
+			</div>
+		</div>
+	</div>
+</div>
