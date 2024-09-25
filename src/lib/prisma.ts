@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 export async function GetPosts(){
     // TODO: 上位10件の投稿を取得する様にする
     const allPosts = await prisma.posts.findMany();
-    return allPosts;
+    return allPosts.reverse();
 }
 
 export function CreatePost(userid: number, is_public: boolean, tags: string[], message: string) {
