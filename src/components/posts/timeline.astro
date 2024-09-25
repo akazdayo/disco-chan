@@ -10,7 +10,7 @@ const posts = await GetPosts();
         posts.map((post) => {
             return (
                 // TODO: 時間の表示形式間違ってる
-                <Post user={post.userid} message={post.message} time={post.created_at.getUTCDate()} tags={post.tags}></Post>
+                <Post user={post.userid} message={post.message} time={post.created_at.toLocaleString()} tags={post.tags}></Post>
             );
         })
     }

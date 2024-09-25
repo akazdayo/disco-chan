@@ -34,6 +34,7 @@ export function PopUp() {
 
 		if (response.ok) {
 			setIsDialogOpen(false);
+			window.location.reload();
 		}
 	};
 
