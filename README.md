@@ -1,3 +1,11 @@
+# TODO
++ [ ] Discord認証
++ [ ] Public/Privateの概念
++ [ ] 投稿に詳細説明を追加
++ [ ] 締め切り機能
++ [ ] タグの個数制限
++ [ ] リアクション
+
 # Astro Starter Kit: Minimal
 
 ```sh
