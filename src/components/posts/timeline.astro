@@ -1,9 +1,17 @@
 ---
 import Post from "@/components/posts/post.astro";
+import { GetPosts } from "@/lib/prisma";
+
+const posts = await GetPosts();
 ---
 
 <div class="flex flex-col">
-    <Post user="Hiroyuki Nishimura" message="軽くLeague of Legendsしたいです！" time={2} tags={["LoL", "雑談", "二時間くらい"]}></Post>
-    <Post user="Hiroyuki Nishimura" message="それってあなたの感想ですよね！！！2" time={2} tags={["LoL", "hello"]}></Post>
-    <Post user="Hiroyuki Nishimura" message="それってあなたの感想ですよね！！！3" time={2} tags={["LoL", "hello"]}></Post>
+    {
+        posts.map((post) => {
+            return (
+                // TODO: 時間の表示形式間違ってる
+                <Post user={post.userid} message={post.message} time={post.created_at.getUTCDate()} tags={post.tags}></Post>
+            );
+        })
+    }
 </div>

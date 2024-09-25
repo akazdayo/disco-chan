@@ -11,11 +11,34 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
-import { CreatePost } from "@/lib/prisma";
+import React, { useState } from "react";
 
 export function PopUp() {
+	const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+	const handleSubmit = async () => {
+		const title = document.getElementById("title") as HTMLInputElement;
+		const tag = document.getElementById("tag") as HTMLInputElement;
+		const isPublic = document.getElementById("is_public") as HTMLInputElement;
+		const tagsArray = tag.value.split(", ");
+
+		const response = await fetch("/api/submit", {
+			method: "POST",
+			body: JSON.stringify({
+				id: 1,
+				message: title.value,
+				tags: tagsArray,
+				is_public: isPublic.ariaChecked === "true",
+			}),
+		});
+
+		if (response.ok) {
+			setIsDialogOpen(false);
+		}
+	};
+
 	return (
-		<Dialog>
+		<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
 			<DialogTrigger asChild>
 				<Button variant="outline">新しい募集を投稿する</Button>
 			</DialogTrigger>
@@ -36,7 +59,7 @@ export function PopUp() {
 
 					{/* タグ */}
 					<div className="grid items-center gap-4">
-						<Input id="tag" placeholder="タグ" className="col-span-3" />
+						<Input id="tag" placeholder="タグ 5つまで" className="col-span-3" />
 					</div>
 
 					{/* 公開設定 */}
@@ -63,24 +86,4 @@ export function PopUp() {
 			</DialogContent>
 		</Dialog>
 	);
-}
-
-function handleSubmit() {
-	const title = document.getElementById("title") as HTMLInputElement;
-	const tag = document.getElementById("tag") as HTMLInputElement;
-	const isPublic = document.getElementById("is_public") as HTMLInputElement;
-
-	const tagsArray = tag.value.split(", ");
-
-	console.log(`submit ${isPublic.checked} debug`);
-	const response = fetch("/api/submit", {
-		method: "POST",
-		body: JSON.stringify({
-			id: 1,
-			is_public: isPublic.ariaChecked === "true",
-			tags: tagsArray,
-			message: title.value,
-		}),
-	});
-	console.log(response);
 }
