@@ -1,0 +1,14 @@
+---
+import BaseLayout from "@/layouts/base.astro"
+import { Login } from "@/components/auth/login";
+import { getToken } from "@/components/auth/afterlogin";
+const params = Astro.url.searchParams;
+const token = await getToken(params);
+
+---
+
+<BaseLayout title="ログイン認証中">
+    <div class="pt-8 flex flex-col w-1/5 m-auto justify-center">
+        <p>ログイン認証中...</p>
+    </div>
+</BaseLayout>

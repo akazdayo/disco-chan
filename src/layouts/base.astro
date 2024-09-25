@@ -1,6 +1,7 @@
 ---
 import { Button } from '@/components/ui/button'
-import  SpeedInsights  from "@vercel/speed-insights/astro"
+import { LoginButton } from '@/components/auth/loginButton';
+import SpeedInsights from "@vercel/speed-insights/astro"
 import "@/styles/global.css";
 const {title} = Astro.props
 ---
@@ -21,11 +22,7 @@ const {title} = Astro.props
 			</Button>
 			<div class="flex-grow"/>
 			<!-- ログインボタン -->
-			<div class="flex items-end justify-end">
-				<Button className="m-5 text-white">
-					Login with Discord
-				</Button>
-			</div>
+			 <LoginButton client:load/>
 		</header>
 
 		<!-- メインコンテンツ -->
