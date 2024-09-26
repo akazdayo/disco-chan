@@ -1,0 +1,28 @@
+---
+const { code:string } = Astro.props;
+---
+
+<script define:vars={{ code:string }}>
+    console.debug(code);
+    if (!code) {
+        console.error('コードがありませんでした。');
+    }
+
+    const login = async (code) => {
+        const response = await fetch("/api/gettoken", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                code: code,
+            }),
+        });
+        return response.json();
+    };
+    login(code).then((data) => {
+        document.cookie = `token=${data.access_token}; max-age=${data.expires_in}; samesite=strict; path=/; secure`;
+    }).catch((error) => {
+        console.error(error);
+    });
+</script>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import type { APIRoute } from "astro";
 
 interface TokenResponse {
     token_type: string;
@@ -9,9 +9,10 @@ interface TokenResponse {
     id_token: string;
 }
 
-export async function getToken(params: URLSearchParams){
-    const code = params.get("code");
-    if (code == null) {
+export const POST: APIRoute = async ({ request }) => {
+    const { code } = await request.json();
+
+    if (!code) {
         throw new Error("ログイン失敗");
     }
 
@@ -39,6 +40,6 @@ export async function getToken(params: URLSearchParams){
     }
 
     const data: TokenResponse = await response.json();
-    console.log(data);
-    return data;
-}
+
+    return new Response(JSON.stringify(data), { status: 200 });
+};

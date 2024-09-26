@@ -1,14 +1,20 @@
 ---
 import BaseLayout from "@/layouts/base.astro"
-import { Login } from "@/components/auth/login";
-import { getToken } from "@/components/auth/afterlogin";
-const params = Astro.url.searchParams;
-const token = await getToken(params);
+//import { Login } from "@/components/auth/login";
+import Login from "@/components/auth/login.astro";
 
+const params = Astro.url.searchParams;
+const code = params.get("code") || "";
+if (code === "") {
+    console.log("code is null");
+    //Astro.redirect("/");
+}
 ---
 
 <BaseLayout title="ログイン認証中">
     <div class="pt-8 flex flex-col w-1/5 m-auto justify-center">
         <p>ログイン認証中...</p>
     </div>
+    <Login code={code}/>
+    <!--<Login code={code} client:only="react"/>-->
 </BaseLayout>
