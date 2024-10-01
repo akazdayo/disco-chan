@@ -6,7 +6,7 @@ import Timeline from "@/components/posts/timeline.astro";
 
 <BaseLayout title="ホーム / Disco-Chan">
 	<div class="pt-8 flex flex-col w-1/5 m-auto justify-center">
-		<PopUp client:load/>
+		<PopUp client:only="react" />
 	</div>
 	<Timeline/>
 </BaseLayout>

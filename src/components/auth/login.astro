@@ -22,6 +22,7 @@ const { code:string } = Astro.props;
     };
     login(code).then((data) => {
         document.cookie = `token=${data.access_token}; max-age=${data.expires_in}; samesite=strict; path=/; secure`;
+        window.location.href = "/";
     }).catch((error) => {
         console.error(error);
     });
