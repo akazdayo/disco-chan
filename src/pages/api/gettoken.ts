@@ -1,13 +1,6 @@
 import type { APIRoute } from "astro";
-
-interface TokenResponse {
-    token_type: string;
-    access_token: string;
-    expires_in: number;
-    refresh_token: string;
-    scope: string;
-    id_token: string;
-}
+import { UploadProfile, CreateSession } from "@/lib/prisma";
+import type { TokenResponse } from "@/lib/prisma";
 
 export const POST: APIRoute = async ({ request }) => {
     const { code } = await request.json();
@@ -40,6 +33,19 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     const data: TokenResponse = await response.json();
+    const sessionid = await CreateSession(data);
+    
+    //await getProfile(data.access_token);
 
-    return new Response(JSON.stringify(data), { status: 200 });
+    return new Response(JSON.stringify({ "session": sessionid, "max_age": data.expires_in}), { status: 200, headers: { "Content-Type": "application/json" } });
 };
+
+async function getProfile(token: string) {
+    const response = await fetch("https://discordapp.com/api/users/@me", {
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    });
+    const profile = await response.json();
+    UploadProfile(profile.id, profile.username, profile.avatar);
+}

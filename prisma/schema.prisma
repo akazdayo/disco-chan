@@ -21,3 +21,16 @@ model posts {
   tags       String[]
   message    String
 }
+
+model users {
+  id       BigInt @id // DiscordのUserID
+  username String
+  icon     String // URL
+}
+
+model tokens {
+  session    String   @id
+  access     String
+  refresh    String
+  expires_at DateTime
+}

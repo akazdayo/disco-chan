@@ -21,7 +21,8 @@ const { code:string } = Astro.props;
         return response.json();
     };
     login(code).then((data) => {
-        document.cookie = `token=${data.access_token}; max-age=${data.expires_in}; samesite=strict; path=/; secure`;
+        // TODO: HttpOnlyをつけよう！
+        document.cookie = `token=${data.session}; max-age=${data.max_age}; samesite=strict; path=/; secure=true;`;
         window.location.href = "/";
     }).catch((error) => {
         console.error(error);
