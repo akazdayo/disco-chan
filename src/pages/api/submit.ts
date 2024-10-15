@@ -1,8 +1,9 @@
 import type { APIRoute } from "astro";
-import { CreatePost } from "@/lib/prisma";
+import { CreatePost, GetSession } from "@/lib/prisma";
 
 export const POST: APIRoute = async ({ request }) => {
-    const { id, is_public, tags, message } = await request.json();
+    const { id, is_public, tags, message, session_token } = await request.json();
+    const access_token = await GetSession(session_token);
     CreatePost(id, is_public, tags, message);
     return new Response("OK", { status: 200 });
 };

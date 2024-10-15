@@ -12,7 +12,7 @@ export interface TokenResponse {
     id_token: string;
 }
 
-export async function GetPosts(){
+export async function GetPosts() {
     // TODO: 上位10件の投稿を取得する様にする
     const allPosts = await prisma.posts.findMany();
     return allPosts.reverse();
@@ -48,10 +48,10 @@ export function UploadProfile(userid: number, username: string, avatar: string) 
     });
 }
 
-export async function CreateSession(tokens: TokenResponse): Promise<string> {
+export async function CreateSession(tokens: TokenResponse, id: number): Promise<string> {
     // TODO: 既に存在するか確認する。存在する場合は更新する
 
-    const timestamp = Math.floor( new Date().getTime() / 1000 );
+    const timestamp = Math.floor(new Date().getTime() / 1000);
     const session = ulid(timestamp);
 
     try {
@@ -59,6 +59,7 @@ export async function CreateSession(tokens: TokenResponse): Promise<string> {
             data: {
                 session: session,
                 access: tokens.access_token,
+                userid: id,
                 refresh: tokens.refresh_token,
                 expires_at: new Date(Date.now() + tokens.expires_in * 1000).toISOString(), //合ってるかわからないから、確認
             }
@@ -68,4 +69,16 @@ export async function CreateSession(tokens: TokenResponse): Promise<string> {
         console.error("Error creating session:", error);
         throw error;
     }
+}
+
+export async function GetSession(session: string): Promise<string> {
+    const token = await prisma.tokens.findFirst({
+        where: {
+            session: session
+        }
+    });
+    if (!token) {
+        throw new Error("Session not found");
+    }
+    return token.access;
 }

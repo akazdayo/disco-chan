@@ -33,11 +33,12 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     const data: TokenResponse = await response.json();
-    const sessionid = await CreateSession(data);
-    
-    //await getProfile(data.access_token);
+    const profile_id = await getProfile(data.access_token);
+    const sessionid = await CreateSession(data, profile_id);
 
-    return new Response(JSON.stringify({ "session": sessionid, "max_age": data.expires_in}), { status: 200, headers: { "Content-Type": "application/json" } });
+
+
+    return new Response(JSON.stringify({ "session": sessionid, "max_age": data.expires_in }), { status: 200, headers: { "Content-Type": "application/json" } });
 };
 
 async function getProfile(token: string) {
@@ -48,4 +49,6 @@ async function getProfile(token: string) {
     });
     const profile = await response.json();
     UploadProfile(profile.id, profile.username, profile.avatar);
+
+    return profile.id;
 }

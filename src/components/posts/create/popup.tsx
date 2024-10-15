@@ -52,6 +52,13 @@ export function PleaseLogin() {
 	);
 }
 
+function getCookie(name: string): string | null {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+    return null;
+}
+
 interface CreatePostProps {
 	setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -62,6 +69,7 @@ export function CreatePost({ setIsDialogOpen }: CreatePostProps) {
 		const tag = document.getElementById("tag") as HTMLInputElement;
 		const isPublic = document.getElementById("is_public") as HTMLInputElement;
 		const tagsArray = tag.value.split(", ");
+		const token = getCookie("token");
 
 		const response = await fetch("/api/submit", {
 			method: "POST",
@@ -70,6 +78,7 @@ export function CreatePost({ setIsDialogOpen }: CreatePostProps) {
 				message: title.value,
 				tags: tagsArray,
 				is_public: isPublic.ariaChecked === "true",
+				session_token: token,
 			}),
 		});
 

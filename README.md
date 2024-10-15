@@ -1,12 +1,13 @@
 # TODO
-+ [ ] Discord認証
-    + [ ] 認証
++ [x] Discord認証
+    + [x] 認証
     + [ ] アイコンとか名前のデータの取得
 + [ ] Public/Privateの概念
 + [ ] 投稿に詳細説明を追加
 + [ ] 締め切り機能
 + [ ] タグの個数制限
 + [ ] リアクション
+    + [ ] ミスキーみたいな感じにする
 
 # Astro Starter Kit: Minimal
 

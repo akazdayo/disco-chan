@@ -31,6 +31,7 @@ model users {
 model tokens {
   session    String   @id
   access     String
+  userid     BigInt
   refresh    String
   expires_at DateTime
 }
