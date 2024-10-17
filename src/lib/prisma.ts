@@ -13,6 +13,11 @@ export interface TokenResponse {
     id_token: string;
 }
 
+export interface UserProfile {
+    username: string;
+    avatar: string;
+}
+
 export async function GetPosts() {
     // TODO: 上位10件の投稿を取得する様にする
     try {
@@ -80,16 +85,29 @@ export async function CreateSession(tokens: TokenResponse, id: number): Promise<
 
 
 export async function GetSession(session: string): Promise<string> {
-    console.log(session);
     const token = await prisma.tokens.findFirst({
         where: {
             session: session
         }
     });
     if (!token) {
-        throw new Error(`Session not found ${session}, ${token}`);
+        throw new Error("Session not found");
     }
 
-    console.log("success");
     return token.access;
+}
+
+export async function GetUserProfile(userid: number): Promise<UserProfile | null> {
+    const profile = await prisma.users.findFirst({
+        where: {
+            userid: userid
+        }
+    });
+    if (profile) {
+        return {
+            username: profile.username,
+            avatar: profile.icon
+        };
+    }
+    return null;
 }

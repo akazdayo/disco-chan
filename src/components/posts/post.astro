@@ -1,22 +1,20 @@
 ---
-//import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { GetUserProfile } from "@/lib/prisma";
 import { Reaction } from "@/components/posts/reaction";
+import { GetAvatar } from "@/components/posts/avatar";
 
-const { message, user, time, tags} = Astro.props;
+const { message, user, time, tags } = Astro.props;
+const userProfile = await GetUserProfile(user);
+const profile = userProfile ? userProfile : null;
 ---
 
 <div class="flex items-center justify-center m-2">
 	<div class="bg-card rounded-lg shadow-xl w-full max-w-md p-6">
 		<div class="flex items-start gap-4">
-			<!--
-			<Avatar className="w-10 h-10 border">
-				<AvatarImage src="@public/placeholder-user.jpg" alt="User Avatar" />
-				<AvatarFallback>TEST</AvatarFallback>
-			</Avatar>
-			-->
+			<GetAvatar user={user} profile={profile} client:load />
 			<div class="grid gap-1 flex-1">
 				<div class="flex items-center gap-2">
-					<div class="font-medium">{user}</div>
+					<div class="font-medium">{profile?.username}</div>
 					<div class="text-xs text-muted-foreground">
 						{time}
 					</div>
@@ -26,7 +24,7 @@ const { message, user, time, tags} = Astro.props;
 				</div>
 				<div class="flex gap-2">
 					{
-						tags.map((tag:string) => (
+						tags.map((tag: string) => (
 							<div class="bg-muted rounded-full px-3 py-1 text-xs text-muted-foreground">
 								{tag}
 							</div>
