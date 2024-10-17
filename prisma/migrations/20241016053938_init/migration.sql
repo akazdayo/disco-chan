@@ -12,7 +12,8 @@ CREATE TABLE "posts" (
 
 -- CreateTable
 CREATE TABLE "users" (
-    "id" BIGINT NOT NULL,
+    "id" BIGSERIAL NOT NULL,
+    "userid" BIGINT NOT NULL,
     "username" TEXT NOT NULL,
     "icon" TEXT NOT NULL,
 

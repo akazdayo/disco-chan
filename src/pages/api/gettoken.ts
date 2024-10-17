@@ -35,9 +35,6 @@ export const POST: APIRoute = async ({ request }) => {
     const data: TokenResponse = await response.json();
     const profile_id = await getProfile(data.access_token);
     const sessionid = await CreateSession(data, profile_id);
-
-
-
     return new Response(JSON.stringify({ "session": sessionid, "max_age": data.expires_in }), { status: 200, headers: { "Content-Type": "application/json" } });
 };
 

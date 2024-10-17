@@ -15,7 +15,7 @@
     "@astrojs/tailwind": "5.1.2",
     "@astrojs/vercel": "^7.8.1",
     "@hookform/resolvers": "^3.9.0",
-    "@prisma/client": "5.20.0",
+    "@prisma/client": "^5.21.0",
     "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-checkbox": "^1.1.1",
     "@radix-ui/react-dialog": "^1.1.1",
@@ -41,6 +41,6 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.2",
-    "prisma": "^5.20.0"
+    "prisma": "^5.21.0"
   }
 }
