@@ -6,6 +6,7 @@ CREATE TABLE "posts" (
     "is_public" BOOLEAN NOT NULL,
     "tags" TEXT[],
     "message" TEXT NOT NULL,
+    "reactions" JSONB NOT NULL DEFAULT '{}',
 
     CONSTRAINT "posts_pkey" PRIMARY KEY ("id")
 );

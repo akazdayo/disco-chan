@@ -111,3 +111,18 @@ export async function GetUserProfile(userid: number): Promise<UserProfile | null
     }
     return null;
 }
+
+export async function UpdateReactions(postid: number, reactions: string) {
+    try {
+        await prisma.posts.update({
+            where: {
+                id: postid
+            },
+            data: {
+                reactions: reactions
+            }
+        });
+    } catch (error) {
+        console.error("Error updating reactions:", error);
+    }
+}

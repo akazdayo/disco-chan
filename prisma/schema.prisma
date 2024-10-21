@@ -20,6 +20,7 @@ model posts {
   is_public  Boolean
   tags       String[]
   message    String
+  reactions  Json     @default("{}") // Unicode
 }
 
 model users {
