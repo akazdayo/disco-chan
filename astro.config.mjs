@@ -9,14 +9,14 @@ import vercel from "@astrojs/vercel/serverless";
 
 // https://astro.build/config
 export default defineConfig({
-  output: "server",
+	output: "hybrid",
 
-  integrations: [
-      react(),
-      tailwind({
-          applyBaseStyles: false,
-      }),
+	integrations: [
+		react(),
+		tailwind({
+			applyBaseStyles: false,
+		}),
 	],
 
-  adapter: vercel(),
+	adapter: vercel(),
 });

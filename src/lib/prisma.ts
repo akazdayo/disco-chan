@@ -47,6 +47,7 @@ export function CreatePost(userid: number, is_public: boolean, tags: string[], m
 }
 
 export function UploadProfile(userid: number, username: string, avatar: string) {
+    // TODO: 既に存在するか確認する。存在する場合は更新する
     prisma.users.create({
         data: {
             userid: userid,

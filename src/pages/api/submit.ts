@@ -1,3 +1,6 @@
+export const prerender = false; // 事前レンダリングを無効化
+
+
 import type { APIRoute } from "astro";
 import { CreatePost, GetSession } from "@/lib/prisma";
 import { GetUserID } from "@/lib/user";

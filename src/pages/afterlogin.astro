@@ -1,5 +1,7 @@
 ---
-import BaseLayout from "@/layouts/base.astro"
+export const prerender = false; // 事前レンダリングを無効化
+
+import BaseLayout from "@/layouts/base.astro";
 //import { Login } from "@/components/auth/login";
 import Login from "@/components/auth/login.astro";
 
@@ -15,5 +17,5 @@ if (code === "") {
     <div class="pt-8 flex flex-col w-1/5 m-auto justify-center">
         <p>ログイン認証中...</p>
     </div>
-    <Login code={code}/>
+    <Login code={code} />
 </BaseLayout>
