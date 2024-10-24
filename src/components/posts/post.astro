@@ -3,7 +3,7 @@ import { GetUserProfile } from "@/lib/prisma";
 import { GetAvatar } from "@/components/posts/avatar";
 import { Picker } from "./reactions";
 
-const { message, user, time, tags } = Astro.props;
+const { message, user, time, tags, postid } = Astro.props;
 const userProfile = await GetUserProfile(user);
 const profile = userProfile ? userProfile : null;
 ---
@@ -31,7 +31,7 @@ const profile = userProfile ? userProfile : null;
 						))
 					}
 				</div>
-				<Picker client:load />
+				<Picker postid={postid} client:only="react" />
 			</div>
 		</div>
 	</div>

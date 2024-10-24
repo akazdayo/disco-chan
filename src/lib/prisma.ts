@@ -1,5 +1,4 @@
 import { PrismaClient } from "@prisma/client";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import { ulid } from 'ulid';
 
 const prisma = new PrismaClient();
@@ -18,14 +17,24 @@ export interface UserProfile {
     avatar: string;
 }
 
-export async function GetPosts() {
+interface Post {
+    id: bigint;
+    created_at: Date;
+    userid: bigint;
+    is_public: boolean;
+    tags: string[];
+    message: string;
+    reactions: any; // TODO: Any抹消
+}
+
+export async function GetPosts(): Promise<Post[]> {
     // TODO: 上位10件の投稿を取得する様にする
     try {
         const allPosts = await prisma.posts.findMany();
         return allPosts.reverse();
     }
     catch (error) {
-        console.warn("投稿を取得できませんでした。", error);
+        console.error("投稿を取得できませんでした。", error);
         return [];
     }
 }
@@ -46,9 +55,28 @@ export function CreatePost(userid: number, is_public: boolean, tags: string[], m
     });
 }
 
-export function UploadProfile(userid: number, username: string, avatar: string) {
-    // TODO: 既に存在するか確認する。存在する場合は更新する
-    prisma.users.create({
+export async function UploadProfile(userid: number, username: string, avatar: string) {
+    const exist = await prisma.users.findFirst({
+        where: {
+            userid: userid
+        }
+    });
+    if (exist) {
+        await prisma.users.update({
+            where: {
+                id: exist.id
+            },
+            data: {
+                id: exist.id,
+                userid: userid,
+                username: username,
+                icon: avatar
+            }
+        });
+        return;
+    }
+
+    await prisma.users.create({
         data: {
             userid: userid,
             username: username,
@@ -61,27 +89,43 @@ export function UploadProfile(userid: number, username: string, avatar: string) 
     });
 }
 
-export async function CreateSession(tokens: TokenResponse, id: number): Promise<string> {
-    // TODO: 既に存在するか確認する。存在する場合は更新する
+export async function CreateSession(tokens: TokenResponse, userid: number): Promise<string> {
+    // TODO: TryCatchなんとかする
 
     const timestamp = Math.floor(new Date().getTime() / 1000);
     const session = ulid(timestamp);
 
-    try {
-        const newSession = await prisma.tokens.create({
+    const exist = await prisma.tokens.findFirst({
+        where: {
+            userid: userid
+        }
+    });
+    if (exist) {
+        await prisma.tokens.update({
+            where: {
+                session: exist.session
+            },
             data: {
                 session: session,
                 access: tokens.access_token,
-                userid: id,
+                userid: userid,
                 refresh: tokens.refresh_token,
                 expires_at: new Date(Date.now() + tokens.expires_in * 1000).toISOString(), //合ってるかわからないから、確認
             }
         });
-        return newSession.session;
-    } catch (error) {
-        console.error("Error creating session:", error);
-        throw error;
+        return session;
     }
+
+    const newSession = await prisma.tokens.create({
+        data: {
+            session: session,
+            access: tokens.access_token,
+            userid: userid,
+            refresh: tokens.refresh_token,
+            expires_at: new Date(Date.now() + tokens.expires_in * 1000).toISOString(), //合ってるかわからないから、確認
+        }
+    });
+    return newSession.session;
 }
 
 
@@ -113,16 +157,44 @@ export async function GetUserProfile(userid: number): Promise<UserProfile | null
     return null;
 }
 
-export async function UpdateReactions(postid: number, reactions: string) {
+export async function UpdateReactions(postid: number, emoji: string, userid: number) {
     try {
-        await prisma.posts.update({
-            where: {
-                id: postid
-            },
-            data: {
-                reactions: reactions
-            }
+        // 既存の投稿を取得
+        const post = await prisma.posts.findUnique({
+            where: { id: postid },
+            select: { reactions: true }
         });
+
+        if (!post) {
+            throw new Error("Post not found");
+        }
+
+    // 既存のリアクションをパース
+    // TODO: なんとかする
+    let reactions: any;
+    if (typeof post.reactions === 'string') {
+        try {
+            reactions = JSON.parse(post.reactions);
+        } catch (error) {
+            console.error("Error parsing reactions JSON:", error);
+            reactions = {};
+        }
+    } else if (typeof post.reactions === 'object') {
+        reactions = post.reactions;
+    } else {
+        reactions = {};
+    }
+
+    // 新しいリアクションを追加または更新
+    reactions[userid] = emoji;
+
+    // リアクションを更新
+    await prisma.posts.update({
+        where: { id: postid },
+        data: {
+            reactions: reactions
+        }
+    });
     } catch (error) {
         console.error("Error updating reactions:", error);
     }
