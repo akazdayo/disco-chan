@@ -11,7 +11,7 @@ if (code === "") {
     Astro.redirect("/");
 }
 
-// ログイン処理
+// login process
 const token = await getToken(code);
 let response = false;
 if (token === null) {

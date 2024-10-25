@@ -28,9 +28,11 @@ interface Post {
     reactions: JsonValue;
 }
 
+// get top10 posts
 export async function GetPosts(): Promise<Post[]> {
     // TODO: 上位10件の投稿を取得する様にする
     try {
+        // Get all posts
         const allPosts = await prisma.posts.findMany();
         return allPosts.reverse();
     }
@@ -40,8 +42,8 @@ export async function GetPosts(): Promise<Post[]> {
     }
 }
 
+// Create a post in the database
 export function CreatePost(userid: number, is_public: boolean, tags: string[], message: string) {
-    console.log(`${userid}, ${is_public}, ${tags}, ${message}`);
     prisma.posts.create({
         data: {
             userid: userid,
@@ -49,20 +51,23 @@ export function CreatePost(userid: number, is_public: boolean, tags: string[], m
             tags: tags,
             message: message
         }
-    }).then(newPost => {
-        console.log(newPost);
     }).catch(error => {
+        // error handling
         console.error("Error creating post:", error);
     });
 }
 
+// Upload a user profile to the database
+// if the user already exists, update the profile
 export async function UploadProfile(userid: number, username: string, avatar: string) {
+    // Check if the user already has a user profile
     const exist = await prisma.users.findFirst({
         where: {
             userid: userid
         }
     });
     if (exist) {
+        // update the user profile
         await prisma.users.update({
             where: {
                 id: exist.id
@@ -77,14 +82,13 @@ export async function UploadProfile(userid: number, username: string, avatar: st
         return;
     }
 
+    // create a new user profile
     await prisma.users.create({
         data: {
             userid: userid,
             username: username,
             icon: avatar
         }
-    }).then(newProfile => {
-        console.log(newProfile);
     }).catch(error => {
         console.error("Error creating profile:", error);
     });
@@ -93,15 +97,18 @@ export async function UploadProfile(userid: number, username: string, avatar: st
 export async function CreateSession(tokens: TokenResponse, userid: number): Promise<string> {
     // TODO: TryCatchなんとかする
 
+    // Get the current timestamp for generate the new sessionID
     const timestamp = Math.floor(new Date().getTime() / 1000);
     const session = ulid(timestamp);
 
+    // Check if the user already has a session
     const exist = await prisma.tokens.findFirst({
         where: {
             userid: userid
         }
     });
     if (exist) {
+        // update the session
         await prisma.tokens.update({
             where: {
                 session: exist.session
@@ -117,6 +124,7 @@ export async function CreateSession(tokens: TokenResponse, userid: number): Prom
         return session;
     }
 
+    // create a new session
     const newSession = await prisma.tokens.create({
         data: {
             session: session,
@@ -129,8 +137,9 @@ export async function CreateSession(tokens: TokenResponse, userid: number): Prom
     return newSession.session;
 }
 
-
-export async function GetSession(session: string): Promise<string> {
+// Get the access token from the session token
+export async function GetAccessToken(session: string): Promise<string> {
+    // search the session token in the database
     const token = await prisma.tokens.findFirst({
         where: {
             session: session
@@ -140,15 +149,20 @@ export async function GetSession(session: string): Promise<string> {
         throw new Error("Session not found");
     }
 
+    // return the access token
     return token.access;
 }
 
+// Get the user profile from the access token
 export async function GetUserProfile(userid: number): Promise<UserProfile | null> {
+    // search the user profile in the database
     const profile = await prisma.users.findFirst({
         where: {
             userid: userid
         }
     });
+
+    // null check
     if (profile) {
         return {
             username: profile.username,
@@ -158,30 +172,33 @@ export async function GetUserProfile(userid: number): Promise<UserProfile | null
     return null;
 }
 
+// Update the reactions of a post
 export async function UpdateReactions(postid: number, emoji: string, userid: number) {
     try {
-        // 既存の投稿を取得
+        // get the post
         const post = await prisma.posts.findUnique({
             where: { id: postid },
             select: { reactions: true }
         });
 
+        // null check
         if (!post) {
             throw new Error("Post not found");
         }
 
-    const reactions = post.reactions as { [key: number]: string };
+        // get the reactions
+        const reactions = post.reactions as { [key: number]: string };
 
-    // 新しいリアクションを追加または更新
-    reactions[userid] = emoji;
+        // update the reactions or add a new reaction
+        reactions[userid] = emoji;
 
-    // リアクションを更新
-    await prisma.posts.update({
-        where: { id: postid },
-        data: {
-            reactions: reactions
-        }
-    });
+        // update the database
+        await prisma.posts.update({
+            where: { id: postid },
+            data: {
+                reactions: reactions
+            }
+        });
     } catch (error) {
         console.error("Error updating reactions:", error);
     }
