@@ -1,17 +1,7 @@
-export const prerender = false; // 事前レンダリングを無効化
-
-
-import type { APIRoute } from "astro";
 import { UploadProfile, CreateSession } from "@/lib/prisma";
 import type { TokenResponse } from "@/lib/prisma";
 
-export const POST: APIRoute = async ({ request }) => {
-    const { code } = await request.json();
-
-    if (!code) {
-        throw new Error("ログイン失敗");
-    }
-
+export async function getToken(code: string): Promise<{ session: string, max_age: number }> {
     // 参考にした記事: https://qiita.com/masayoshi4649/items/46fdb744cb8255f5eb98
     const response = await fetch("https://discordapp.com/api/oauth2/token",
         {
@@ -28,18 +18,16 @@ export const POST: APIRoute = async ({ request }) => {
             })
         }
     );
-
     if (!response.ok) {
         const errorText = await response.text();
         console.error(`Error: ${response.status} - ${errorText}`);
         throw new Error("トークン取得失敗");
     }
-
     const data: TokenResponse = await response.json();
     const profile_id = await getProfile(data.access_token);
     const sessionid = await CreateSession(data, profile_id);
-    return new Response(JSON.stringify({ "session": sessionid, "max_age": data.expires_in }), { status: 200, headers: { "Content-Type": "application/json" } });
-};
+    return { session: sessionid, max_age: data.expires_in };
+}
 
 async function getProfile(token: string) {
     const response = await fetch("https://discordapp.com/api/users/@me", {

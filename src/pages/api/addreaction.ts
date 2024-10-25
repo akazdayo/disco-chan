@@ -3,15 +3,18 @@ import type { APIRoute } from "astro";
 import { GetSession } from "@/lib/prisma";
 import { UpdateReactions } from "@/lib/prisma";
 import { GetUserID } from "@/lib/user";
+import { parse } from "cookie";
+
 
 
 export const POST: APIRoute = async ({ request }) => {
-    const { session, emoji, postid } = await request.json();
-    if (!session || !emoji) {
+    const cookies = parse(request.headers.get('cookie') || '');
+    const { emoji, postid } = await request.json();
+    if (!cookies.token || !emoji) {
         throw new Error("Invalid request");
     }
 
-    const accessToken = await GetSession(session);
+    const accessToken = await GetSession(cookies.token);
     if (!accessToken) {
         throw new Error("Invalid session");
     }

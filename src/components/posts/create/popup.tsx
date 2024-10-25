@@ -18,7 +18,7 @@ export function PopUp() {
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const isLogin = document.cookie
 		.split("; ")
-		.some((cookie) => cookie.startsWith("token="));
+		.some((cookie) => cookie.startsWith("is_login="));
 
 	return (
 		<Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -52,13 +52,6 @@ export function PleaseLogin() {
 	);
 }
 
-function getCookie(name: string): string | null {
-	const value = `; ${document.cookie}`;
-	const parts = value.split(`; ${name}=`);
-	if (parts.length === 2) return parts.pop()?.split(";").shift() || null;
-	return null;
-}
-
 interface CreatePostProps {
 	setIsDialogOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -69,9 +62,6 @@ export function CreatePost({ setIsDialogOpen }: CreatePostProps) {
 		const tag = document.getElementById("tag") as HTMLInputElement;
 		const isPublic = document.getElementById("is_public") as HTMLInputElement;
 		const tagsArray = tag.value.split(", ");
-		const session_token = getCookie("token");
-
-		console.log(`${session_token}を送信しました`);
 
 		const response = await fetch("/api/submit", {
 			method: "POST",
@@ -79,7 +69,6 @@ export function CreatePost({ setIsDialogOpen }: CreatePostProps) {
 				message: title.value,
 				tags: tagsArray,
 				is_public: isPublic.ariaChecked === "true",
-				session_token: session_token,
 			}),
 		});
 

@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import type { JsonValue } from "@prisma/client/runtime/library";
 import { ulid } from 'ulid';
 
 const prisma = new PrismaClient();
@@ -24,7 +25,7 @@ interface Post {
     is_public: boolean;
     tags: string[];
     message: string;
-    reactions: any; // TODO: Any抹消
+    reactions: JsonValue;
 }
 
 export async function GetPosts(): Promise<Post[]> {
@@ -169,21 +170,7 @@ export async function UpdateReactions(postid: number, emoji: string, userid: num
             throw new Error("Post not found");
         }
 
-    // 既存のリアクションをパース
-    // TODO: なんとかする
-    let reactions: any;
-    if (typeof post.reactions === 'string') {
-        try {
-            reactions = JSON.parse(post.reactions);
-        } catch (error) {
-            console.error("Error parsing reactions JSON:", error);
-            reactions = {};
-        }
-    } else if (typeof post.reactions === 'object') {
-        reactions = post.reactions;
-    } else {
-        reactions = {};
-    }
+    const reactions = post.reactions as { [key: number]: string };
 
     // 新しいリアクションを追加または更新
     reactions[userid] = emoji;
