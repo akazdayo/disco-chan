@@ -43,13 +43,16 @@ const profile = userProfile ? userProfile : null;
 					<div class="flex items-center gap-2">
 						<div class="text-xs text-muted-foreground flex gap-1">
 							{
-								Object.keys(reactions).map((userid) => {
-									return (
-										<p title={userid}>
-											{reactions[userid]}
-										</p>
-									);
-								})
+								typeof reactions === "object" &&
+									reactions !== null &&
+									!Array.isArray(reactions) &&
+									Object.keys(reactions).map((userid) => {
+										return (
+											<p title={userid}>
+												{reactions[userid]}
+											</p>
+										);
+									})
 							}
 						</div>
 					</div>
