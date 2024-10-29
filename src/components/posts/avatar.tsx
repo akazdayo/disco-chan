@@ -4,7 +4,7 @@ import type { UserProfile } from "@/lib/prisma";
 export function GetAvatar({
 	user,
 	profile,
-}: { user: string; profile: UserProfile | null }) {
+}: { user: number; profile: UserProfile | null }) {
 	return (
 		<Avatar className="w-10 h-10 border">
 			<AvatarImage

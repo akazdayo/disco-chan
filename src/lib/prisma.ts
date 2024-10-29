@@ -34,7 +34,9 @@ export async function GetPosts(): Promise<Post[]> {
     try {
         // Get all posts
         const allPosts = await prisma.posts.findMany();
-        return allPosts.reverse();
+        // Sort posts by created_at in descending order
+        allPosts.sort((a, b) => b.created_at.getTime() - a.created_at.getTime());
+        return allPosts;
     }
     catch (error) {
         console.error("投稿を取得できませんでした。", error);

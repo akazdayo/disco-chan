@@ -15,6 +15,7 @@ const posts = await GetPosts();
                     time={post.created_at.toLocaleString()}
                     tags={post.tags}
                     postid={post.id}
+                    reactions={post.reactions}
                 />
             );
         })

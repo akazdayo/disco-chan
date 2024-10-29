@@ -3,9 +3,10 @@ import {
 	PopoverTrigger,
 	PopoverContent,
 } from "@/components/ui/popover";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-export function Picker({ postid }: { postid: string }) {
+export function Picker({ postid }: { postid: number }) {
 	const allEmojis = ["👍", "👎", "❤️", "🎉"]; // これ以外を弾くようにしないと、脆弱性につながっちゃいそう
 
 	const onReactionClick = async (emoji: string) => {
@@ -22,7 +23,9 @@ export function Picker({ postid }: { postid: string }) {
 	return (
 		<Popover>
 			<PopoverTrigger asChild>
-				<Button variant="outline">+</Button>
+				<p className="bg-muted rounded-full px-3 py-1 text-xs text-muted-foreground cursor-pointer">
+					+
+				</p>
 			</PopoverTrigger>
 			<PopoverContent className="w-auto">
 				<div className="flex gap-4">

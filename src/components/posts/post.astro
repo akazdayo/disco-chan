@@ -2,8 +2,16 @@
 import { GetUserProfile } from "@/lib/prisma";
 import { GetAvatar } from "@/components/posts/avatar";
 import { Picker } from "./reactions";
+import type { JsonValue } from "@prisma/client/runtime/library";
 
-const { message, user, time, tags, postid } = Astro.props;
+const { message, user, time, tags, postid, reactions } = Astro.props as {
+	message: string;
+	user: number;
+	time: string;
+	tags: string[];
+	postid: number;
+	reactions: JsonValue;
+};
 const userProfile = await GetUserProfile(user);
 const profile = userProfile ? userProfile : null;
 ---
@@ -31,8 +39,23 @@ const profile = userProfile ? userProfile : null;
 						))
 					}
 				</div>
-				<Picker postid={postid} client:only="react" />
+				<div>
+					<div class="flex items-center gap-2">
+						<div class="text-xs text-muted-foreground flex gap-1">
+							{
+								Object.keys(reactions).map((userid) => {
+									return (
+										<p title={userid}>
+											{reactions[userid]}
+										</p>
+									);
+								})
+							}
+						</div>
+					</div>
+				</div>
 			</div>
+			<Picker postid={postid} client:only="react" />
 		</div>
 	</div>
 </div>
