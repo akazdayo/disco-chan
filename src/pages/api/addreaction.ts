@@ -1,4 +1,4 @@
-export const prerender = false; // 事前レンダリングを無効化
+//export const prerender = false; // 事前レンダリングを無効化
 
 import type { APIRoute } from "astro";
 import { GetAccessToken } from "@/lib/prisma";
