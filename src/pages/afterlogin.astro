@@ -21,14 +21,14 @@ if (token === null) {
 Astro.cookies.set("token", token.session, {
     maxAge: token.max_age,
     path: "/",
-    sameSite: "strict",
+    sameSite: "lax",
     secure: true,
     httpOnly: true,
 });
 Astro.cookies.set("is_login", "true", {
     maxAge: token.max_age,
     path: "/",
-    sameSite: "strict",
+    sameSite: "lax",
     secure: true,
 });
 response = true;

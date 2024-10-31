@@ -24,7 +24,7 @@ const { title } = Astro.props;
 			</a>
 			<div class="flex-grow"></div>
 			<!-- ログインボタン -->
-			<LoginButton client:load />
+			<LoginButton client:only="react" />
 		</header>
 
 		<!-- メインコンテンツ -->
